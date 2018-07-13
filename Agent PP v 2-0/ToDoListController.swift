@@ -9,11 +9,35 @@
 import UIKit
 
 class ToDoListController: UITableViewController{
-    let itemArray = ["Find mike", "Buy Eggs", "Destroy Demogrogon"]
+    var itemArray = ["Find mike", "Buy Eggs", "Destroy Demogrogon"]
     override func viewDidLoad() {
         super.viewDidLoad()
         
     }
+    // MARK: - IB Action
+    @IBAction func AddBarItem(_ sender: UIBarButtonItem) {
+        var textField = UITextField()
+        let alert = UIAlertController(title: "Добавить адрес", message: "Введите адрес", preferredStyle: .alert)
+        let alertActionCancel = UIAlertAction(title: "Отменить", style: .cancel)
+        let alertAction = UIAlertAction(title: "Добавить", style: .default) { (addAction) in
+
+               self.itemArray.append(textField.text!)
+                self.tableView.reloadData()
+            
+        }
+      
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Добавить адрес"
+            textField = alertTextField
+        }
+        
+        alert.addAction(alertAction)
+        alert.addAction(alertActionCancel)
+        
+        present(alert, animated: true, completion: nil)
+        
+    }
+    
     //MARK: - Table View Data Sourse
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count

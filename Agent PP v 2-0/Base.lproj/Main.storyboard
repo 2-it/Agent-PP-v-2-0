@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -32,7 +33,17 @@
                             <outlet property="delegate" destination="jJZ-eX-ztc" id="HIj-5R-NcJ"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Главная" id="BGP-e3-S6H"/>
+                    <navigationItem key="navigationItem" title="Главная" id="BGP-e3-S6H">
+                        <rightBarButtonItems>
+                            <barButtonItem title="Item" id="AQV-SW-Xk0"/>
+                            <barButtonItem systemItem="add" id="DJs-4Y-C4b">
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="AddBarItem:" destination="jJZ-eX-ztc" id="SzG-KR-xHv"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DIN-cQ-rk8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
