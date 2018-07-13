@@ -10,10 +10,15 @@ import UIKit
 
 class ToDoListController: UITableViewController{
     var itemArray = ["Find mike", "Buy Eggs", "Destroy Demogrogon"]
+    let defaultsSave = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        if let items = defaultsSave.array(forKey: "ToDoListArray") as? [String]{
+            itemArray = items
+        }
     }
+    
     // MARK: - IB Action
     @IBAction func AddBarItem(_ sender: UIBarButtonItem) {
         var textField = UITextField()
@@ -21,8 +26,9 @@ class ToDoListController: UITableViewController{
         let alertActionCancel = UIAlertAction(title: "Отменить", style: .cancel)
         let alertAction = UIAlertAction(title: "Добавить", style: .default) { (addAction) in
 
-               self.itemArray.append(textField.text!)
-                self.tableView.reloadData()
+           self.itemArray.append(textField.text!)
+            self.defaultsSave.set(self.itemArray, forKey: "ToDoListArray")
+            self.tableView.reloadData()
             
         }
       
