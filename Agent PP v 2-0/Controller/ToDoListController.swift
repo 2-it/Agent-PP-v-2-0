@@ -9,14 +9,33 @@
 import UIKit
 
 class ToDoListController: UITableViewController{
-    var itemArray = ["Find mike", "Buy Eggs", "Destroy Demogrogon"]
+    var itemArray = [Item]()
     let defaultsSave = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let items = defaultsSave.array(forKey: "ToDoListArray") as? [String]{
+
+        let newItem = Item()
+        newItem.title = "Find mike"
+        itemArray.append(newItem)
+        
+        let newItem1 = Item()
+        newItem1.title = "Find mike2"
+        itemArray.append(newItem1)
+        
+        let newItem2 = Item()
+        newItem2.title = "Find mike3"
+        itemArray.append(newItem2)
+        
+        let newItem3 = Item()
+        newItem3.title = "Find mike4"
+        itemArray.append(newItem3)
+        
+        if let items = defaultsSave.array(forKey: "ToDoListArray") as? [Item]{
             itemArray = items
+            
         }
+        
     }
     
     // MARK: - IB Action
@@ -25,8 +44,9 @@ class ToDoListController: UITableViewController{
         let alert = UIAlertController(title: "Добавить адрес", message: "Введите адрес", preferredStyle: .alert)
         let alertActionCancel = UIAlertAction(title: "Отменить", style: .cancel)
         let alertAction = UIAlertAction(title: "Добавить", style: .default) { (addAction) in
-
-           self.itemArray.append(textField.text!)
+            let newItem = Item()
+            newItem.title = textField.text!
+            self.itemArray.append(newItem)
             self.defaultsSave.set(self.itemArray, forKey: "ToDoListArray")
             self.tableView.reloadData()
             
@@ -51,21 +71,21 @@ class ToDoListController: UITableViewController{
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        cell.textLabel?.text = itemArray[indexPath.row]
+        cell.textLabel?.text = itemArray[indexPath.row].title
+        let item = itemArray[indexPath.row]
+        cell.accessoryType = item.done == true ? .checkmark : .none
+
         return cell
     }
     //Mark: - Table View Delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = itemArray[indexPath.row]
+  
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        tableView.reloadData()
 
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark{
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        }else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
         tableView.deselectRow(at: indexPath, animated: true)
         
-        print(cell)
+
     }
 }
 
