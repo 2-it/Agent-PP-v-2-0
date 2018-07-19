@@ -7,26 +7,36 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
+
 class CategoryTableViewController: UITableViewController {
-    var categoryArray = [Category]()
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    let realm = try! Realm()
+    var categoryArray: Results<Category>?
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         loadCategory()
     }
+    func loadCategory(){
+        
+        categoryArray = realm.objects(Category.self)
+        
+        tableView.reloadData()
+    }
+    
     // MARK: -  Add new Category
     
     @IBAction func addButtonPressed(_ sender: Any) {
         var textField = UITextField()
         let alert = UIAlertController(title:"Добавить адрес", message: "Введите название улицы", preferredStyle: .alert)
         let alertAction = UIAlertAction(title: "Добавить", style: .default) { (action) in
-            let newCategory = Category(context: self.context)
+            let newCategory = Category()
             newCategory.name = textField.text!
-            self.categoryArray.append(newCategory)
-            self.saveCategory()
+            //self.categoryArray.append(newCategory)
+            self.save(category: newCategory)
         }
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Введите Адрес"
@@ -41,12 +51,12 @@ class CategoryTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        return categoryArray.count
+        return categoryArray?.count ?? 1
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
-        cell.textLabel?.text = categoryArray[indexPath.row].name
+        cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "Нет категорий"
         return cell
     }
     
@@ -59,27 +69,21 @@ class CategoryTableViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as! ToDoListController
         if let indexPath = tableView.indexPathForSelectedRow{
-            destinationVC.selectedCategory = categoryArray[indexPath.row]
+            destinationVC.selectedCategory = categoryArray?[indexPath.row]
         }
     }
     // MARK: = Data Manipulation Method
     
-    func saveCategory(){
+    func save(category: Category){
         do{
-            try context.save()
+            try realm.write {
+                realm.add(category)
+            }
         }catch{
             print("Ошибка сохранения категории \(error)")
         }
         tableView.reloadData()
     }
-    func loadCategory(with request: NSFetchRequest<Category> = Category.fetchRequest()){
-        do{
-            categoryArray = try context.fetch(request)
-        }catch{
-            print("Ошибка загрузки данных категории \(error)")
-        }
-        tableView.reloadData()
-    }
-    
+
     
 }
